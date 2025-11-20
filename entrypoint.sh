@@ -63,5 +63,7 @@ if [ "${RUN_SEED}" = "true" ]; then
 fi
 
 echo "[entrypoint] Starting PHP-FPM and Nginx"
+# Substitute PORT in nginx config
+sed -i "s/PORT_PLACEHOLDER/${PORT:-8080}/g" /etc/nginx/nginx.conf
 php-fpm -D
 nginx -g 'daemon off;'

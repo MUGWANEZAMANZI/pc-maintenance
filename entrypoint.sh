@@ -29,7 +29,7 @@ DB_CONNECTION=sqlite
 DB_DATABASE=${DB_DATABASE:-/var/data/database.sqlite}
 
 CACHE_DRIVER=${CACHE_DRIVER:-file}
-SESSION_DRIVER=${SESSION_DRIVER:-database}
+SESSION_DRIVER=${SESSION_DRIVER:-file}
 QUEUE_CONNECTION=${QUEUE_CONNECTION:-database}
 EOF
   fi
@@ -69,7 +69,8 @@ fi
 
 echo "[entrypoint] Running artisan optimize tasks"
 php artisan config:cache || { echo "[entrypoint] ERROR: config:cache failed"; exit 1; }
-php artisan route:cache || echo "[entrypoint] WARNING: route:cache failed, continuing..."
+# Skip route caching to allow Livewire dynamic asset route in production.
+# php artisan route:cache || echo "[entrypoint] WARNING: route:cache failed, continuing..."
 php artisan view:cache || { echo "[entrypoint] ERROR: view:cache failed"; exit 1; }
 
 if [ "${RUN_MIGRATIONS}" = "true" ]; then

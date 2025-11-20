@@ -1,0 +1,12 @@
+# Ignore local dev artifacts
+.git
+.gitignore
+/node_modules
+/vendor
+/storage/*.key
+.env
+.env.*
+Dockerfile.old
+.idea
+.vscode
+npm-debug.log

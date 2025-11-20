@@ -14,8 +14,8 @@ if [ ! -f /var/www/html/.env ]; then
   if [ -f /var/www/html/.env.example ]; then
     cp /var/www/html/.env.example /var/www/html/.env
   else
-    cat > /var/www/html/.env <<'EOF'
-APP_NAME=Laravel
+    cat > /var/www/html/.env <<EOF
+APP_NAME=${APP_NAME:-Laravel}
 APP_ENV=production
 APP_KEY=
 APP_DEBUG=false
@@ -24,18 +24,27 @@ APP_URL=${APP_URL:-http://localhost}
 LOG_CHANNEL=stack
 LOG_LEVEL=info
 
-DB_CONNECTION=${DB_CONNECTION:-sqlite}
-DB_HOST=${DB_HOST}
-DB_PORT=${DB_PORT}
-DB_DATABASE=${DB_DATABASE}
-DB_USERNAME=${DB_USERNAME}
-DB_PASSWORD=${DB_PASSWORD}
+DB_CONNECTION=sqlite
+DB_DATABASE=${DB_DATABASE:-/var/data/database.sqlite}
 
-CACHE_DRIVER=file
-SESSION_DRIVER=file
-QUEUE_CONNECTION=sync
+CACHE_DRIVER=${CACHE_DRIVER:-file}
+SESSION_DRIVER=${SESSION_DRIVER:-database}
+QUEUE_CONNECTION=${QUEUE_CONNECTION:-database}
 EOF
   fi
+fi
+
+# Ensure SQLite database exists
+if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
+  DB_PATH="${DB_DATABASE:-/var/data/database.sqlite}"
+  DB_DIR=$(dirname "$DB_PATH")
+  echo "[entrypoint] Ensuring SQLite database directory exists: $DB_DIR"
+  mkdir -p "$DB_DIR"
+  if [ ! -f "$DB_PATH" ]; then
+    echo "[entrypoint] Creating SQLite database file: $DB_PATH"
+    touch "$DB_PATH"
+  fi
+  chmod 664 "$DB_PATH" || true
 fi
 
 if grep -q "APP_KEY=" /var/www/html/.env; then

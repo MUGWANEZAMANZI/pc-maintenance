@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
+echo "[entrypoint] === PC Maintenance Container Starting ==="
 echo "[entrypoint] Ensuring storage and cache permissions"
 if [ "$(id -u)" = "0" ]; then
   chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
@@ -39,12 +40,13 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
   DB_PATH="${DB_DATABASE:-/var/data/database.sqlite}"
   DB_DIR=$(dirname "$DB_PATH")
   echo "[entrypoint] Ensuring SQLite database directory exists: $DB_DIR"
-  mkdir -p "$DB_DIR"
+  mkdir -p "$DB_DIR" || { echo "[entrypoint] ERROR: Failed to create $DB_DIR"; exit 1; }
   if [ ! -f "$DB_PATH" ]; then
     echo "[entrypoint] Creating SQLite database file: $DB_PATH"
-    touch "$DB_PATH"
+    touch "$DB_PATH" || { echo "[entrypoint] ERROR: Failed to create $DB_PATH"; exit 1; }
   fi
-  chmod 664 "$DB_PATH" || true
+  chmod 664 "$DB_PATH" 2>/dev/null || echo "[entrypoint] WARNING: Could not chmod database file"
+  echo "[entrypoint] Database file ready: $(ls -lh $DB_PATH)"
 fi
 
 if grep -q "APP_KEY=" /var/www/html/.env; then
@@ -57,9 +59,9 @@ if grep -q "APP_KEY=" /var/www/html/.env; then
 fi
 
 echo "[entrypoint] Running artisan optimize tasks"
-php artisan config:cache
-php artisan route:cache || true
-php artisan view:cache
+php artisan config:cache || { echo "[entrypoint] ERROR: config:cache failed"; exit 1; }
+php artisan route:cache || echo "[entrypoint] WARNING: route:cache failed, continuing..."
+php artisan view:cache || { echo "[entrypoint] ERROR: view:cache failed"; exit 1; }
 
 if [ "${RUN_MIGRATIONS}" = "true" ]; then
   echo "[entrypoint] Running migrations"
@@ -73,6 +75,15 @@ fi
 
 echo "[entrypoint] Starting PHP-FPM and Nginx"
 # Substitute PORT in nginx config
-sed -i "s/PORT_PLACEHOLDER/${PORT:-8080}/g" /etc/nginx/nginx.conf
+sed -i "s/PORT_PLACEHOLDER/${PORT:-8080}/g" /etc/nginx/nginx.conf || { echo "[entrypoint] ERROR: nginx config substitution failed"; exit 1; }
+
+echo "[entrypoint] === Environment Check ==="
+echo "  APP_ENV: ${APP_ENV:-not_set}"
+echo "  APP_DEBUG: ${APP_DEBUG:-not_set}"
+echo "  DB_CONNECTION: ${DB_CONNECTION:-sqlite}"
+echo "  DB_DATABASE: ${DB_DATABASE:-/var/data/database.sqlite}"
+echo "  PORT: ${PORT:-8080}"
+echo "[entrypoint] =========================="
+
 php-fpm -D
 nginx -g 'daemon off;'

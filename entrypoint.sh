@@ -41,12 +41,21 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
   DB_DIR=$(dirname "$DB_PATH")
   echo "[entrypoint] Ensuring SQLite database directory exists: $DB_DIR"
   mkdir -p "$DB_DIR" || { echo "[entrypoint] ERROR: Failed to create $DB_DIR"; exit 1; }
+  
   if [ ! -f "$DB_PATH" ]; then
     echo "[entrypoint] Creating SQLite database file: $DB_PATH"
     touch "$DB_PATH" || { echo "[entrypoint] ERROR: Failed to create $DB_PATH"; exit 1; }
   fi
-  chmod 664 "$DB_PATH" 2>/dev/null || echo "[entrypoint] WARNING: Could not chmod database file"
+  
+  # Set proper ownership and permissions for database and directory
+  if [ "$(id -u)" = "0" ]; then
+    chown www-data:www-data "$DB_DIR" "$DB_PATH" || echo "[entrypoint] WARNING: Could not chown database"
+  fi
+  chmod 775 "$DB_DIR" || echo "[entrypoint] WARNING: Could not chmod database directory"
+  chmod 664 "$DB_PATH" || echo "[entrypoint] WARNING: Could not chmod database file"
+  
   echo "[entrypoint] Database file ready: $(ls -lh $DB_PATH)"
+  echo "[entrypoint] Database directory: $(ls -ldh $DB_DIR)"
 fi
 
 if grep -q "APP_KEY=" /var/www/html/.env; then

@@ -55,10 +55,8 @@ RUN chmod +x /entrypoint.sh
 ENV PORT=8080
 EXPOSE 8080
 
-# Non-root (optional)
-RUN addgroup -g 1000 laravel && adduser -G laravel -D -u 1000 laravel \
-    && chown -R laravel:laravel /var/www/html
-USER laravel
+# Keep root for simplicity on Render; php-fpm runs as www-data internally.
+# (If you require non-root, ensure permissions handled pre-USER switch.)
 
 # Healthcheck (simple)
 HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:$PORT/ || exit 1

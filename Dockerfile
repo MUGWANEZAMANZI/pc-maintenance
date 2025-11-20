@@ -47,7 +47,7 @@ COPY --from=php-base /var/www/html/vendor ./vendor
 COPY --from=node-build /app/public/build ./public/build
 
 # Entry scripts / config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

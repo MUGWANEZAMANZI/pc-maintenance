@@ -8,7 +8,7 @@ RUN apk add --no-cache \
     git curl zip unzip nginx supervisor sqlite sqlite-dev libpq-dev bash nodejs npm
 
 # PHP extensions (common for Laravel)
-RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite
+RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite pdo_pgsql
 
 WORKDIR /var/www/html
 
@@ -22,13 +22,23 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # ==============================================
 FROM node:20-alpine AS node-build
 WORKDIR /app
+
+# Copy package files and install dependencies
 COPY package.json package-lock.json* ./
-RUN npm install --no-audit --no-fund
+RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+
+# Copy all necessary files for Vite build
 COPY resources ./resources
+COPY public ./public
 COPY vite.config.js ./
-# Dummy build expects Laravel mix of css/js paths
+COPY tailwind.config.js* ./
+COPY postcss.config.js* ./
+
+# Copy vendor for any dependencies
 COPY --from=php-base /var/www/html/vendor ./vendor
-RUN npm run build || echo "Skipping build if scripts missing"
+
+# Build assets (fail if build fails)
+RUN npm run build
 
 # ==============================================
 # Stage 3: Final image

@@ -4,8 +4,29 @@
 
 A Laravel application for PC maintenance management.
 
+## Quick Start
+
+If you already have PHP 8.2+, Composer, and Node.js installed:
+
+```bash
+# Clone the repository
+git clone https://github.com/MUGWANEZAMANZI/pc-maintenance.git
+cd pc-maintenance
+
+# Run automated setup
+composer setup
+
+# Start the development server
+composer dev
+```
+
+Visit [http://localhost:8000](http://localhost:8000) to see the application.
+
+**Don't have the prerequisites?** See the [Installation](#installation) section below.
+
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [Requirements](#requirements)
 - [Installation](#installation)
   - [Installing PHP](#installing-php)

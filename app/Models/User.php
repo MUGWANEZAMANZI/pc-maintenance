@@ -51,6 +51,7 @@ class User extends Authenticatable
     // Role constants
     public const ROLE_ADMIN = 'admin';
     public const ROLE_TECHNICIAN = 'technician';
+    public const ROLE_USER = 'user';
 
     // Technician availability status constants
     public const TECH_STATUS_AVAILABLE = 'Available';
@@ -65,6 +66,11 @@ class User extends Authenticatable
     public function assignedRequests()
     {
         return $this->hasMany(Request::class, 'technician_id');
+    }
+
+    public function submittedRequests()
+    {
+        return $this->hasMany(Request::class, 'user_id');
     }
 
     public function managedPcs()

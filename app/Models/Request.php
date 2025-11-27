@@ -10,7 +10,8 @@ class Request extends Model
     use HasFactory;
 
     protected $fillable = [
-        'first_name','last_name','email','telephone','date','unit','status','request_type','technician_id'
+        'first_name','last_name','email','telephone','date','unit','status','request_type','technician_id','user_id','description',
+        'department_id','computer_lab_id','pc_id','accessory_id','network_device_id'
     ];
 
     public const STATUS_PENDING = 'Pending';
@@ -21,5 +22,35 @@ class Request extends Model
     public function technician()
     {
         return $this->belongsTo(User::class, 'technician_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function computerLab()
+    {
+        return $this->belongsTo(ComputerLab::class);
+    }
+
+    public function pc()
+    {
+        return $this->belongsTo(PC::class);
+    }
+
+    public function accessory()
+    {
+        return $this->belongsTo(Accessory::class);
+    }
+
+    public function networkDevice()
+    {
+        return $this->belongsTo(NetworkDevice::class);
     }
 }

@@ -19,7 +19,7 @@
             </style>
         @endif
     </head>
-    <body class="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-800 text-gray-900 dark:text-gray-100 min-h-screen">
+    <body class="bg-blue-400 from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-800 text-gray-900 dark:text-gray-100 min-h-screen">
         <!-- Header -->
         <header class="w-full backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

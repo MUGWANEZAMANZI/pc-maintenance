@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\Buildings;
 use Database\Seeders\ComputerLabs;
+use Database\Seeders\EquipmentSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             Buildings::class,
             ComputerLabs::class,
+            EquipmentSeeder::class,
         ]);
 
         // Seed an initial admin if none exists

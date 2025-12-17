@@ -19,15 +19,13 @@
             </style>
         @endif
     </head>
-    <body class="bg-blue-400 from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-800 text-gray-900 dark:text-gray-100 min-h-screen">
+    <body class=from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-800 text-gray-900 dark:text-gray-100 min-h-screen">
         <!-- Header -->
         <header class="w-full backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center">
-                        <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
-                        </svg>
+                        <img src="{{ asset('logo.png') }}" alt="Logo" class="h-24 w-24 mr-3">
                         <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400 bg-clip-text text-transparent">PC Maintenance System</span>
                     </div>
                     @if (Route::has('login'))
@@ -94,9 +92,9 @@
 
                 <!-- Decorative Elements -->
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-30">
-                    <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-300 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob"></div>
+                    {{-- <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-300 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob"></div>
                     <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob animation-delay-2000"></div>
-                    <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob animation-delay-4000"></div>
+                    <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob animation-delay-4000"></div> --}}
                 </div>
             </div>
         </div>

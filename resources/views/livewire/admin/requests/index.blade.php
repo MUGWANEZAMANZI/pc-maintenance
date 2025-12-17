@@ -12,10 +12,11 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold">Equipment Health Map</h3>
-                        <button wire:click="toggleHealthMap" 
-                                class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                        <button wire:click="toggleHealthMap" wire:loading.attr="disabled" wire:target="toggleHealthMap"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
                             {{ $showHealthMap ? 'Hide Map' : 'Show Map' }}
                         </button>
+                        <span class="text-xs text-gray-500 ml-2" wire:loading wire:target="toggleHealthMap">Loading...</span>
                     </div>
 
                     @if($showHealthMap)
@@ -32,10 +33,13 @@
                                         'PC' => 'pc',
                                         'Accessory' => 'accessory',
                                         'Network Device' => 'network_device',
+                                        default => $item instanceof \App\Models\PC ? 'pc'
+                                            : ($item instanceof \App\Models\Accessory ? 'accessory'
+                                            : ($item instanceof \App\Models\NetworkDevice ? 'network_device' : 'pc')),
                                     };
                                 @endphp
-                                <button wire:click="selectEquipment('{{ $typeSlug }}', {{ $item->id }})"
-                                        class="{{ $bgColor }} text-white rounded-lg p-4 hover:opacity-90 transition cursor-pointer flex flex-col items-center justify-center min-h-[120px]">
+                                <button wire:click="selectEquipment('{{ $typeSlug }}', {{ $item->id }})" wire:loading.attr="disabled" wire:target="selectEquipment"
+                                    class="{{ $bgColor }} text-white rounded-lg p-4 hover:opacity-90 transition cursor-pointer flex flex-col items-center justify-center min-h-[120px]">
                                     <div class="text-3xl mb-2">
                                         @if($item->equipment_type === 'PC') 💻
                                         @elseif($item->equipment_type === 'Accessory') 🖱️
@@ -151,11 +155,18 @@
                             <select wire:model="assignTechnicianId" class="w-full border rounded px-3 py-2 mb-3">
                                 <option value="">-- choose technician --</option>
                                 @foreach($technicians as $t)
-                                    <option value="{{ $t->id }}">{{ $t->name }} ({{ $t->availability_status ?? 'n/a' }})</option>
+                                    <option value="{{ $t->id }}" @disabled(($t->availability_status ?? 'unavailable') !== 'available')>
+                                        {{ $t->name }} ({{ $t->availability_status ?? 'n/a' }})
+                                    </option>
                                 @endforeach
                             </select>
+                            @error('assignTechnicianId') <div class="text-red-600 text-sm mb-2">{{ $message }}</div> @enderror
+                            @php $selectedTech = collect($technicians)->firstWhere('id', $assignTechnicianId); @endphp
                             <div class="flex gap-2">
-                                <button wire:click="assign" class="px-4 py-2 bg-indigo-600 text-white rounded" @disabled(!$assignTechnicianId)>Assign</button>
+                                <button wire:click="assign" class="px-4 py-2 bg-indigo-600 text-white rounded"
+                                        @disabled(!$assignTechnicianId || optional($selectedTech)->availability_status !== 'available')
+                                        wire:loading.attr="disabled" wire:target="assign">Assign</button>
+                                <span class="text-xs text-gray-500 self-center" wire:loading wire:target="assign">Assigning...</span>
                                 <button wire:click="$set('assignRequestId',0)" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
                             </div>
                         </div>

@@ -103,7 +103,7 @@ class Form extends Component
             'registration_year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'health' => 'required|in:healthy,malfunctioning,dead',
             'building_id' => 'nullable|exists:buildings,id',
-            'computer_lab_id' => 'nullable|exists:computer_labs,id',
+            'computer_lab_id' => 'required|exists:computer_labs,id',
         ];
 
         if ($this->equipment_type === 'pc') {

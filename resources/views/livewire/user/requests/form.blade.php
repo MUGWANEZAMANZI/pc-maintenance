@@ -12,7 +12,7 @@
                     <form wire:submit.prevent="save">
                         <div class="mb-4">
                             <label for="equipment_type" class="block text-sm font-medium text-gray-700">Equipment Type *</label>
-                            <select wire:model.live="equipment_type" id="equipment_type" 
+                                <select wire:model.live="equipment_type" id="equipment_type" 
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">Select Equipment Type</option>
                                 <option value="pc">PC/Computer</option>
@@ -39,7 +39,7 @@
                             <div class="mb-4">
                                 <label for="computer_lab_id" class="block text-sm font-medium text-gray-700">Computer Lab *</label>
                                 <select wire:model.live="computer_lab_id" id="computer_lab_id" 
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" @disabled="!$building_id">
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" @disabled(!$building_id)>
                                     <option value="">Select Computer Lab</option>
                                     @foreach($computerLabs as $lab)
                                         <option value="{{ $lab->id }}">{{ $lab->name }} - {{ $lab->location ?? 'No location' }}</option>
@@ -51,44 +51,50 @@
 
                         @if($equipment_type === 'pc' && $computer_lab_id && $pcs->count() > 0)
                             <div class="mb-4">
-                                <label for="pc_id" class="block text-sm font-medium text-gray-700">Select PC *</label>
-                                <select wire:model="pc_id" id="pc_id" 
+                                <label for="pc_id" class="block text-sm font-medium text-gray-700">Device Name *</label>
+                                <select wire:model="pc_id" id="pc_id" wire:key="pc-select-{{ $building_id }}-{{ $computer_lab_id }}-{{ $equipment_type }}"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">Choose a PC</option>
                                     @foreach($pcs as $pc)
-                                        <option value="{{ $pc->id }}">[ID {{ $pc->id }}] {{ $pc->device_name ?? ($pc->brand.' '.$pc->os) }} - {{ $pc->computerLab->name ?? 'No lab' }}</option>
+                                        <option value="{{ $pc->id }}">{{ $pc->device_name ?? ('PC #'.$pc->id) }}</option>
                                     @endforeach
                                 </select>
                                 @error('pc_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
+                        @elseif($equipment_type === 'pc' && $computer_lab_id)
+                            <div class="mb-4 text-center text-gray-500">Ooops! It's empty here</div>
                         @endif
 
                         @if($equipment_type === 'accessory' && $computer_lab_id && $accessories->count() > 0)
                             <div class="mb-4">
-                                <label for="accessory_id" class="block text-sm font-medium text-gray-700">Select Accessory *</label>
-                                <select wire:model="accessory_id" id="accessory_id" 
+                                <label for="accessory_id" class="block text-sm font-medium text-gray-700">Device Name *</label>
+                                <select wire:model="accessory_id" id="accessory_id" wire:key="accessory-select-{{ $building_id }}-{{ $computer_lab_id }}-{{ $equipment_type }}"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">Choose an Accessory</option>
                                     @foreach($accessories as $accessory)
-                                        <option value="{{ $accessory->id }}">[ID {{ $accessory->id }}] {{ $accessory->device_name ?? ($accessory->type.' - '.$accessory->brand) }} - {{ $accessory->computerLab->name ?? 'No lab' }}</option>
+                                        <option value="{{ $accessory->id }}">{{ $accessory->device_name ?? ($accessory->type.' #'.$accessory->id) }}</option>
                                     @endforeach
                                 </select>
                                 @error('accessory_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
+                        @elseif($equipment_type === 'accessory' && $computer_lab_id)
+                            <div class="mb-4 text-center text-gray-500">Ooops! It's empty here</div>
                         @endif
 
                         @if($equipment_type === 'network_device' && $computer_lab_id && $networkDevices->count() > 0)
                             <div class="mb-4">
-                                <label for="network_device_id" class="block text-sm font-medium text-gray-700">Select Network Device *</label>
-                                <select wire:model="network_device_id" id="network_device_id" 
+                                <label for="network_device_id" class="block text-sm font-medium text-gray-700">Device Name *</label>
+                                <select wire:model="network_device_id" id="network_device_id" wire:key="netdev-select-{{ $building_id }}-{{ $computer_lab_id }}-{{ $equipment_type }}"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="">Choose a Network Device</option>
                                     @foreach($networkDevices as $device)
-                                        <option value="{{ $device->id }}">[ID {{ $device->id }}] {{ $device->device_name ?? ($device->type.' - '.$device->brand) }} - {{ $device->computerLab->name ?? 'No lab' }}</option>
+                                        <option value="{{ $device->id }}">{{ $device->device_name ?? ($device->type.' #'.$device->id) }}</option>
                                     @endforeach
                                 </select>
                                 @error('network_device_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
+                        @elseif($equipment_type === 'network_device' && $computer_lab_id)
+                            <div class="mb-4 text-center text-gray-500">Ooops! It's empty here</div>
                         @endif
 
                         <div class="mb-4">

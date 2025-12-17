@@ -75,7 +75,6 @@ class Form extends Component
 
     private function resetEquipment()
     {
-        $this->equipment_type = '';
         $this->pc_id = '';
         $this->accessory_id = '';
         $this->network_device_id = '';

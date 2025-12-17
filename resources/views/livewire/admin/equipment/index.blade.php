@@ -107,6 +107,9 @@
                                                         'PC' => 'pc',
                                                         'Accessory' => 'accessory',
                                                         'Network Device' => 'network_device',
+                                                        default => $item instanceof \App\Models\PC ? 'pc'
+                                                            : ($item instanceof \App\Models\Accessory ? 'accessory'
+                                                            : ($item instanceof \App\Models\NetworkDevice ? 'network_device' : 'pc')),
                                                     };
                                                 @endphp
                                                 <a href="{{ route('admin.equipment.edit', ['type' => $typeSlug, 'id' => $item->id]) }}" 

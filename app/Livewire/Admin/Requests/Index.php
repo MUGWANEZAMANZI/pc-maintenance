@@ -104,6 +104,22 @@ class Index extends Component
 
     public function assign(): void
     {
+        if (!$this->assignTechnicianId) {
+            $this->addError('assignTechnicianId', 'Please choose a technician.');
+            return;
+        }
+
+        $tech = User::where('role', User::ROLE_TECHNICIAN)->find($this->assignTechnicianId);
+        if (!$tech) {
+            $this->addError('assignTechnicianId', 'Technician not found.');
+            return;
+        }
+
+        if (($tech->availability_status ?? 'unavailable') !== 'available') {
+            $this->addError('assignTechnicianId', 'This technician is not available.');
+            return;
+        }
+
         $req = Request::findOrFail($this->assignRequestId);
         $req->technician_id = $this->assignTechnicianId;
         $req->status = Request::STATUS_ASSIGNED;

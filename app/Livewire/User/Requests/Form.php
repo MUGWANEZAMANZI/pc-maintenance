@@ -118,4 +118,13 @@ class Form extends Component
     {
         return view('livewire.user.requests.form');
     }
+
+    public function updated($property, $value)
+    {
+        if ($property === 'department_id') {
+            $this->updatedDepartmentId($value);
+        } elseif ($property === 'computer_lab_id') {
+            $this->updatedComputerLabId($value);
+        }
+    }
 }

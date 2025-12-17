@@ -5,6 +5,9 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Departments;
+use Database\Seeders\Buildings;
+use Database\Seeders\ComputerLabs;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,6 +18,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Core data
+        $this->call([
+            Departments::class,
+            Buildings::class,
+            ComputerLabs::class,
+        ]);
+
         // Seed an initial admin if none exists
         if (!User::where('email', 'admin@pcm.local')->exists()) {
             User::create([

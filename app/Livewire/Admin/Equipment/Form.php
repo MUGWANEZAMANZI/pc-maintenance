@@ -171,4 +171,11 @@ class Form extends Component
     {
         return view('livewire.admin.equipment.form');
     }
+
+    public function updated($property, $value)
+    {
+        if ($property === 'department_id') {
+            $this->updatedDepartmentId($value);
+        }
+    }
 }

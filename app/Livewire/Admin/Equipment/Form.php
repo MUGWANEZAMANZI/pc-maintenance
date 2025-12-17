@@ -92,7 +92,7 @@ class Form extends Component
         if ($value) {
             $this->computerLabs = ComputerLab::where('building_id', $value)->orderBy('name')->get();
         } else {
-            $this->computerLabs = ComputerLab::orderBy('name')->get();
+            $this->computerLabs = [];
         }
     }
 

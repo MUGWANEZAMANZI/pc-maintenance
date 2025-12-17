@@ -54,26 +54,30 @@
                             <!-- Building -->
                             <div>
                                 <label for="building_id" class="block text-sm font-medium text-gray-700">Building</label>
-                                <select wire:model="building_id" id="building_id" 
+                                <select wire:model.live="building_id" id="building_id" 
                                         class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                     <option value="">Select Building</option>
                                     @foreach($buildings as $building)
                                         <option value="{{ $building->id }}">{{ $building->name }}</option>
                                     @endforeach
                                 </select>
+                                <span class="text-xs text-gray-500" wire:loading wire:target="building_id">Loading labs…</span>
                                 @error('building_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <!-- Computer Lab -->
                             <div>
                                 <label for="computer_lab_id" class="block text-sm font-medium text-gray-700">Computer Lab</label>
-                                <select wire:model="computer_lab_id" id="computer_lab_id" 
-                                        class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <select wire:model.live="computer_lab_id" id="computer_lab_id" 
+                                        class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" @disabled(!$building_id) wire:key="admin-lab-select-{{ $building_id }}">
                                     <option value="">Select Computer Lab</option>
                                     @foreach($computerLabs as $lab)
                                         <option value="{{ $lab->id }}">{{ $lab->name }}</option>
                                     @endforeach
                                 </select>
+                                @if($building_id && $computerLabs === [] || ($building_id && collect($computerLabs)->count() === 0))
+                                    <div class="text-xs text-gray-500 mt-1">No labs found for this building.</div>
+                                @endif
                                 @error('computer_lab_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 

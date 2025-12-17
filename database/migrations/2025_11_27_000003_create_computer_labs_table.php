@@ -11,7 +11,6 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->foreignId('department_id')->constrained('departments')->cascadeOnDelete();
             $table->string('location')->nullable();
             $table->integer('capacity')->nullable();
             $table->text('description')->nullable();

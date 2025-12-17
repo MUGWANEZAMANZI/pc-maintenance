@@ -25,15 +25,15 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="department_id" class="block text-sm font-medium text-gray-700">Department *</label>
-                            <select wire:model="department_id" id="department_id" 
+                            <label for="building_id" class="block text-sm font-medium text-gray-700">Building *</label>
+                            <select wire:model="building_id" id="building_id" 
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="">Select Department</option>
-                                @foreach($departments as $dept)
-                                    <option value="{{ $dept->id }}">{{ $dept->name }} ({{ $dept->code }})</option>
+                                <option value="">Select Building</option>
+                                @foreach($buildings as $b)
+                                    <option value="{{ $b->id }}">{{ $b->name }}</option>
                                 @endforeach
                             </select>
-                            @error('department_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            @error('building_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="mb-4">

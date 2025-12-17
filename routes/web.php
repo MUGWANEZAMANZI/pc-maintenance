@@ -18,8 +18,6 @@ use App\Livewire\User\Requests\Index as UserRequestsIndex;
 use App\Livewire\User\Requests\Form as UserRequestForm;
 use App\Livewire\Admin\Users\Index as AdminUsersIndex;
 use App\Livewire\Admin\Users\Form as AdminUserForm;
-use App\Livewire\Admin\Departments\Index as AdminDepartmentsIndex;
-use App\Livewire\Admin\Departments\Form as AdminDepartmentForm;
 use App\Livewire\Admin\ComputerLabs\Index as AdminComputerLabsIndex;
 use App\Livewire\Admin\ComputerLabs\Form as AdminComputerLabForm;
 use App\Livewire\Admin\Equipment\Index as AdminEquipmentIndex;
@@ -50,9 +48,6 @@ require __DIR__.'/auth.php';
 // Admin routes
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
-    Route::get('/departments', AdminDepartmentsIndex::class)->name('admin.departments.index');
-    Route::get('/departments/create', AdminDepartmentForm::class)->name('admin.departments.create');
-    Route::get('/departments/{id}/edit', AdminDepartmentForm::class)->name('admin.departments.edit');
     Route::get('/computer-labs', AdminComputerLabsIndex::class)->name('admin.computer-labs.index');
     Route::get('/computer-labs/create', AdminComputerLabForm::class)->name('admin.computer-labs.create');
     Route::get('/computer-labs/{id}/edit', AdminComputerLabForm::class)->name('admin.computer-labs.edit');

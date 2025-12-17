@@ -116,9 +116,6 @@ new class extends Component
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.departments.index')" :active="request()->routeIs('admin.departments.*')" wire:navigate>
-                    {{ __('Departments') }}
-                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.computer-labs.index')" :active="request()->routeIs('admin.computer-labs.*')" wire:navigate>
                     {{ __('Labs') }}
                 </x-responsive-nav-link>

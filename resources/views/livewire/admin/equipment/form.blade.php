@@ -64,25 +64,11 @@
                                 @error('building_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <!-- Department -->
-                            <div>
-                                <label for="department_id" class="block text-sm font-medium text-gray-700">Department</label>
-                                <select wire:model.live="department_id" id="department_id" 
-                                        class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                    <option value="">Select Department</option>
-                                    @foreach($departments as $department)
-                                        <option value="{{ $department->id }}">{{ $department->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('department_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
                             <!-- Computer Lab -->
                             <div>
                                 <label for="computer_lab_id" class="block text-sm font-medium text-gray-700">Computer Lab</label>
                                 <select wire:model="computer_lab_id" id="computer_lab_id" 
-                                        class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                        @if(empty($department_id)) disabled @endif>
+                                        class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                     <option value="">Select Computer Lab</option>
                                     @foreach($computerLabs as $lab)
                                         <option value="{{ $lab->id }}">{{ $lab->name }}</option>

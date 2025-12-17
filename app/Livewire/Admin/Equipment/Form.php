@@ -6,11 +6,11 @@ use App\Models\PC;
 use App\Models\Accessory;
 use App\Models\NetworkDevice;
 use App\Models\Building;
-use App\Models\Department;
 use App\Models\ComputerLab;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class Form extends Component
 {
@@ -23,7 +23,6 @@ class Form extends Component
     public $registration_year = '';
     public $health = 'healthy';
     public $building_id = '';
-    public $department_id = '';
     public $computer_lab_id = '';
     
     // PC specific
@@ -37,7 +36,6 @@ class Form extends Component
     
     // Data
     public $buildings = [];
-    public $departments = [];
     public $computerLabs = [];
 
     public function mount($type = 'pc', $id = null): void
@@ -49,7 +47,8 @@ class Form extends Component
 
         $this->equipment_type = $type;
         $this->buildings = Building::orderBy('name')->get();
-        $this->departments = Department::orderBy('name')->get();
+        // Departments removed; load labs lazily via building selection
+        $this->computerLabs = [];
 
         if ($id) {
             $this->equipmentId = $id;
@@ -73,8 +72,8 @@ class Form extends Component
         $this->computer_lab_id = $equipment->computer_lab_id ?? '';
         
         if ($equipment->computerLab) {
-            $this->department_id = $equipment->computerLab->department_id;
-            $this->updatedDepartmentId($this->department_id);
+            $this->building_id = $equipment->computerLab->building_id ?? $this->building_id;
+            $this->updatedBuildingId($this->building_id);
         }
 
         if ($type === 'pc') {
@@ -87,20 +86,19 @@ class Form extends Component
         }
     }
 
-    public function updatedDepartmentId($value)
+    public function updatedBuildingId($value)
     {
         $this->computer_lab_id = '';
         if ($value) {
-            $this->computerLabs = ComputerLab::where('department_id', $value)->orderBy('name')->get();
+            $this->computerLabs = ComputerLab::where('building_id', $value)->orderBy('name')->get();
         } else {
-            $this->computerLabs = [];
+            $this->computerLabs = ComputerLab::orderBy('name')->get();
         }
     }
 
     public function save()
     {
         $commonRules = [
-            'device_name' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'registration_year' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'health' => 'required|in:healthy,malfunctioning,dead',
@@ -109,6 +107,10 @@ class Form extends Component
         ];
 
         if ($this->equipment_type === 'pc') {
+            $commonRules['device_name'] = [
+                'required','string','max:255',
+                Rule::unique('pcs', 'device_name')->ignore($this->equipmentId)
+            ];
             $rules = array_merge($commonRules, [
                 'specifications' => 'required|string',
                 'hdd' => 'required|string',
@@ -116,6 +118,11 @@ class Form extends Component
                 'os' => 'required|string',
             ]);
         } else {
+            $table = $this->equipment_type === 'accessory' ? 'accessories' : 'network_devices';
+            $commonRules['device_name'] = [
+                'required','string','max:255',
+                Rule::unique($table, 'device_name')->ignore($this->equipmentId)
+            ];
             $rules = array_merge($commonRules, [
                 'type' => 'required|string|max:255',
             ]);
@@ -174,8 +181,8 @@ class Form extends Component
 
     public function updated($property, $value)
     {
-        if ($property === 'department_id') {
-            $this->updatedDepartmentId($value);
+        if ($property === 'building_id') {
+            $this->updatedBuildingId($value);
         }
     }
 }

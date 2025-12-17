@@ -11,7 +11,7 @@ class Request extends Model
 
     protected $fillable = [
         'first_name','last_name','email','telephone','date','unit','status','request_type','technician_id','user_id','description',
-        'department_id','computer_lab_id','pc_id','accessory_id','network_device_id'
+        'computer_lab_id','pc_id','accessory_id','network_device_id'
     ];
 
     public const STATUS_PENDING = 'Pending';
@@ -29,10 +29,7 @@ class Request extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
+    // Department relation removed
 
     public function computerLab()
     {

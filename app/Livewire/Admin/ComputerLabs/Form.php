@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\ComputerLabs;
 
 use App\Models\ComputerLab;
-use App\Models\Department;
+use App\Models\Building;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
@@ -13,11 +13,11 @@ class Form extends Component
     public $labId;
     public $name = '';
     public $code = '';
-    public $department_id = '';
+    public $building_id = '';
     public $location = '';
     public $capacity = '';
     public $description = '';
-    public $departments = [];
+    public $buildings = [];
 
     public function mount($id = null): void
     {
@@ -26,14 +26,14 @@ class Form extends Component
             abort(403);
         }
 
-        $this->departments = Department::orderBy('name')->get();
+        $this->buildings = Building::orderBy('name')->get();
 
         if ($id) {
             $this->labId = $id;
             $lab = ComputerLab::findOrFail($id);
             $this->name = $lab->name;
             $this->code = $lab->code;
-            $this->department_id = $lab->department_id;
+            $this->building_id = $lab->building_id;
             $this->location = $lab->location ?? '';
             $this->capacity = $lab->capacity ?? '';
             $this->description = $lab->description ?? '';
@@ -45,7 +45,7 @@ class Form extends Component
         $this->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:computer_labs,code' . ($this->labId ? ',' . $this->labId : ''),
-            'department_id' => 'required|exists:departments,id',
+            'building_id' => 'required|exists:buildings,id',
             'location' => 'nullable|string|max:255',
             'capacity' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
@@ -54,7 +54,7 @@ class Form extends Component
         $data = [
             'name' => $this->name,
             'code' => $this->code,
-            'department_id' => $this->department_id,
+            'building_id' => $this->building_id,
             'location' => $this->location,
             'capacity' => $this->capacity,
             'description' => $this->description,

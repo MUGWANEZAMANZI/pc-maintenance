@@ -6,8 +6,8 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Request;
 use App\Models\User;
-use App\Models\Department;
 use App\Models\ComputerLab;
+use App\Models\Building;
 use App\Models\PC;
 use App\Models\Accessory;
 use App\Models\NetworkDevice;
@@ -17,14 +17,15 @@ class Form extends Component
     public $request_type = '';
     public $description = '';
     public $telephone = '';
-    public $department_id = '';
+    // Department removed
+    public $building_id = '';
     public $computer_lab_id = '';
     public $equipment_type = ''; // pc, accessory, network_device, general
     public $pc_id = '';
     public $accessory_id = '';
     public $network_device_id = '';
 
-    public $departments = [];
+    public $buildings = [];
     public $computerLabs = [];
     public $pcs = [];
     public $accessories = [];
@@ -38,14 +39,8 @@ class Form extends Component
         }
 
         $this->telephone = $user->phone ?? '';
-        $this->departments = Department::orderBy('name')->get();
-    }
-
-    public function updatedDepartmentId($value)
-    {
-        $this->computer_lab_id = '';
-        $this->computerLabs = ComputerLab::where('department_id', $value)->orderBy('name')->get();
-        $this->resetEquipment();
+        $this->buildings = Building::orderBy('name')->get();
+        $this->computerLabs = [];
     }
 
     public function updatedComputerLabId($value)
@@ -63,6 +58,19 @@ class Form extends Component
         $this->pc_id = '';
         $this->accessory_id = '';
         $this->network_device_id = '';
+        // Device lists are populated only when a lab is selected
+        $this->pcs = [];
+        $this->accessories = [];
+        $this->networkDevices = [];
+        if ($this->computer_lab_id) {
+            if ($this->equipment_type === 'pc') {
+                $this->pcs = PC::where('computer_lab_id', $this->computer_lab_id)->get();
+            } elseif ($this->equipment_type === 'accessory') {
+                $this->accessories = Accessory::where('computer_lab_id', $this->computer_lab_id)->get();
+            } elseif ($this->equipment_type === 'network_device') {
+                $this->networkDevices = NetworkDevice::where('computer_lab_id', $this->computer_lab_id)->get();
+            }
+        }
     }
 
     private function resetEquipment()
@@ -82,9 +90,9 @@ class Form extends Component
             'request_type' => 'required|string|max:255',
             'description' => 'required|string',
             'telephone' => 'required|string|max:20',
-            'department_id' => 'required|exists:departments,id',
-            'computer_lab_id' => 'nullable|exists:computer_labs,id',
             'equipment_type' => 'required|in:pc,accessory,network_device,general',
+            'building_id' => 'required_unless:equipment_type,general|nullable|exists:buildings,id',
+            'computer_lab_id' => 'required_unless:equipment_type,general|nullable|exists:computer_labs,id',
             'pc_id' => 'required_if:equipment_type,pc|nullable|exists:pcs,id',
             'accessory_id' => 'required_if:equipment_type,accessory|nullable|exists:accessories,id',
             'network_device_id' => 'required_if:equipment_type,network_device|nullable|exists:network_devices,id',
@@ -103,7 +111,6 @@ class Form extends Component
             'status' => Request::STATUS_PENDING,
             'request_type' => $this->request_type,
             'description' => $this->description,
-            'department_id' => $this->department_id,
             'computer_lab_id' => $this->computer_lab_id,
             'pc_id' => $this->equipment_type === 'pc' ? $this->pc_id : null,
             'accessory_id' => $this->equipment_type === 'accessory' ? $this->accessory_id : null,
@@ -121,10 +128,21 @@ class Form extends Component
 
     public function updated($property, $value)
     {
-        if ($property === 'department_id') {
-            $this->updatedDepartmentId($value);
+        if ($property === 'building_id') {
+            $this->updatedBuildingId($value);
         } elseif ($property === 'computer_lab_id') {
             $this->updatedComputerLabId($value);
+        }
+    }
+
+    public function updatedBuildingId($value)
+    {
+        $this->computer_lab_id = '';
+        $this->resetEquipment();
+        if ($value) {
+            $this->computerLabs = ComputerLab::where('building_id', $value)->orderBy('name')->get();
+        } else {
+            $this->computerLabs = [];
         }
     }
 }

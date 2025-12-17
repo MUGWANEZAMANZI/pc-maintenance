@@ -83,6 +83,7 @@
                             <th class="p-2">Unit</th>
                             <th class="p-2">Type</th>
                             <th class="p-2">Description</th>
+                            <th class="p-2">Affected Device</th>
                             <th class="p-2">Status</th>
                             <th class="p-2">Technician</th>
                             <th class="p-2">Actions</th>
@@ -109,6 +110,17 @@
                                     <div class="max-w-xs truncate" title="{{ $r->description }}">
                                         {{ $r->description ?? 'N/A' }}
                                     </div>
+                                </td>
+                                <td class="p-2 text-xs">
+                                    @if($r->pc)
+                                        <div><span class="font-semibold">PC</span> — ID {{ $r->pc->id }}, {{ $r->pc->device_name ?? ($r->pc->brand.' '.$r->pc->os) }}</div>
+                                    @elseif($r->accessory)
+                                        <div><span class="font-semibold">Accessory</span> — ID {{ $r->accessory->id }}, {{ $r->accessory->device_name ?? ($r->accessory->type.' '.$r->accessory->brand) }}</div>
+                                    @elseif($r->networkDevice)
+                                        <div><span class="font-semibold">Network</span> — ID {{ $r->networkDevice->id }}, {{ $r->networkDevice->device_name ?? ($r->networkDevice->type.' '.$r->networkDevice->brand) }}</div>
+                                    @else
+                                        <div class="text-gray-400">General / Not specified</div>
+                                    @endif
                                 </td>
                                 <td class="p-2">
                                     <span class="px-2 py-1 text-xs rounded 

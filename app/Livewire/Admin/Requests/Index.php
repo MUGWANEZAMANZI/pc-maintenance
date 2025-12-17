@@ -32,7 +32,9 @@ class Index extends Component
 
     public function loadData(): void
     {
-        $this->requests = Request::orderByDesc('date')->get();
+        $this->requests = Request::with(['pc','accessory','networkDevice','technician','user'])
+            ->orderByDesc('date')
+            ->get();
         $this->technicians = User::where('role', User::ROLE_TECHNICIAN)->get();
     }
 

@@ -38,8 +38,11 @@
                                     Dashboard
                                 </a>
                             @else
-                                <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                                    Log in
+                                <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                    Sign In
+                                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
                                 </a>
                                
                             @endauth
@@ -49,53 +52,13 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <div class="relative overflow-hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-                <div class="text-center">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-                        <span class="block text-gray-900 dark:text-white">Streamline Your</span>
-                        <span class="block bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400 bg-clip-text text-transparent">ICT Infrastructure Management</span>
-                    </h1>
-                    <p class="max-w-3xl mx-auto text-xl text-gray-600 dark:text-gray-300 mb-10">
-                        Comprehensive PC maintenance and ICT service management system. Track equipment, manage technicians, and resolve service requests efficiently.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        @if (Route::has('login'))
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                                    Go to Dashboard
-                                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                                    </svg>
-                                </a>
-                            @else
-                                <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                                    Sign In
-                                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                                    </svg>
-                                </a>
-                               
-                            @endauth
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Decorative Elements -->
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-30">
-                    {{-- <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-300 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob"></div>
-                    <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob animation-delay-2000"></div>
-                    <div class="absolute bottom-1/4 left-1/3 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl animate-blob animation-delay-4000"></div> --}}
-                </div>
-            </div>
-        </div>
+       
 
         <!-- Features Section -->
-        <div class="py-20 bg-white dark:bg-gray-900">
+        <div class="py-12 bg-white dark:bg-gray-900">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Complete ICT Management Solution</h2>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">ICT Management Solution</h2>
                     <p class="text-xl text-gray-600 dark:text-gray-300">Everything you need to manage your IT infrastructure efficiently</p>
                 </div>
 
@@ -169,20 +132,45 @@
                 </div>
             </div>
         </div>
+         <!-- Hero Section -->
+        <div class="relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+                <div class="text-center">
+                    
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        @if (Route::has('login'))
+                            @auth
+                                <a href="{{ url('/dashboard') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                    Go to Dashboard
+                                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                </a>
+                            @else
+                                {{-- <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                    Sign In
+                                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                </a> --}}
+                               
+                            @endauth
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Decorative Elements -->
+                
+            </div>
+        </div>
 
         <!-- CTA Section -->
-        <div class="py-20 bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-700 dark:to-blue-700">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
-                <p class="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">Join us today and transform how you manage your ICT infrastructure.</p>
+        <div class="py-1 bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-700 dark:to-blue-700">
+            
                 @if (Route::has('login'))
                     @guest
-                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-indigo-600 bg-white hover:bg-indigo-50 transition-all duration-200 shadow-lg hover:shadow-xl">
-                            Create Your Account
-                            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </a>
+                       
                     @endguest
                 @endif
             </div>

@@ -149,7 +149,8 @@ class Index extends Component
             return;
         }
 
-        if (($tech->availability_status ?? 'unavailable') !== 'available') {
+        $status = strtolower(trim($tech->availability_status ?? ''));
+        if ($status !== 'available') {
             $this->addError('assignTechnicianId', 'This technician is not available.');
             return;
         }

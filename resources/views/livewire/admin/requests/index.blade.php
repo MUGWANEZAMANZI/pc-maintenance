@@ -159,16 +159,20 @@
                                     <select wire:model="assignTechnicianId" class="w-full border rounded px-3 py-2 mb-3">
                                         <option value="">-- choose technician --</option>
                                         @foreach($technicians as $t)
-                                            <option value="{{ $t->id }}" @disabled(($t->availability_status ?? 'unavailable') !== 'available')>
+                                            @php $status = strtolower(trim($t->availability_status ?? '')); @endphp
+                                            <option value="{{ $t->id }}" @disabled($status !== 'available')>
                                                 {{ $t->name }} ({{ $t->availability_status ?? 'n/a' }})
                                             </option>
                                         @endforeach
                                     </select>
                                     @error('assignTechnicianId') <div class="text-red-600 text-sm mb-2">{{ $message }}</div> @enderror
-                                    @php $selectedTech = collect($technicians)->firstWhere('id', $assignTechnicianId); @endphp
+                                    @php 
+                                        $selectedTech = collect($technicians)->firstWhere('id', $assignTechnicianId);
+                                        $selectedTechStatus = strtolower(trim(optional($selectedTech)->availability_status ?? ''));
+                                    @endphp
                                     <div class="flex gap-2">
                                         <button wire:click="assign" class="px-4 py-2 bg-indigo-600 text-white rounded"
-                                                @disabled(!$assignTechnicianId || optional($selectedTech)->availability_status !== 'available')
+                                                @disabled(!$assignTechnicianId || $selectedTechStatus !== 'available')
                                                 wire:loading.attr="disabled" wire:target="assign">Assign</button>
                                         <span class="text-xs text-gray-500 self-center" wire:loading wire:target="assign">Assigning...</span>
                                     </div>
@@ -186,7 +190,7 @@
                                             </thead>
                                             <tbody>
                                             @foreach($technicians as $t)
-                                                @php $isAvailable = ($t->availability_status ?? 'unavailable') === 'available'; @endphp
+                                                @php $isAvailable = strtolower(trim($t->availability_status ?? '')) === 'available'; @endphp
                                                 <tr
                                                     @if($isAvailable)
                                                         wire:click="assignTo({{ $t->id }})"

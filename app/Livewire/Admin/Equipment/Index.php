@@ -35,7 +35,8 @@ class Index extends Component
         $equipment = collect();
 
         if ($this->filter === 'all' || $this->filter === 'pcs') {
-            $pcs = PC::with(['building', 'computerLab', 'technician'])
+            $pcs = PC::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id')
+                ->with(['building:id,name','computerLab:id,name','technician:id,name'])
                 ->when($this->healthFilter !== 'all', function($query) {
                     $query->where('health', $this->healthFilter);
                 })
@@ -48,7 +49,8 @@ class Index extends Component
         }
 
         if ($this->filter === 'all' || $this->filter === 'accessories') {
-            $accessories = Accessory::with(['building', 'computerLab', 'technician'])
+            $accessories = Accessory::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id','type')
+                ->with(['building:id,name','computerLab:id,name','technician:id,name'])
                 ->when($this->healthFilter !== 'all', function($query) {
                     $query->where('health', $this->healthFilter);
                 })
@@ -61,7 +63,8 @@ class Index extends Component
         }
 
         if ($this->filter === 'all' || $this->filter === 'network_devices') {
-            $devices = NetworkDevice::with(['building', 'computerLab', 'technician'])
+            $devices = NetworkDevice::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id','type')
+                ->with(['building:id,name','computerLab:id,name','technician:id,name'])
                 ->when($this->healthFilter !== 'all', function($query) {
                     $query->where('health', $this->healthFilter);
                 })

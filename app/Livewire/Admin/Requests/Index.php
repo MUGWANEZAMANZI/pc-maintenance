@@ -32,17 +32,35 @@ class Index extends Component
 
     public function loadData(): void
     {
-        $this->requests = Request::with(['pc','accessory','networkDevice','technician','user'])
+        $this->requests = Request::select([
+                'id','first_name','last_name','email','telephone','date','unit','status','request_type',
+                'technician_id','user_id','description','pc_id','accessory_id','network_device_id'
+            ])
+            ->with([
+                'pc:id,device_name,brand,os',
+                'accessory:id,device_name,type,brand',
+                'networkDevice:id,device_name,type,brand',
+                'technician:id,name',
+                'user:id'
+            ])
             ->orderByDesc('date')
             ->get();
-        $this->technicians = User::where('role', User::ROLE_TECHNICIAN)->get();
+
+        $this->technicians = User::where('role', User::ROLE_TECHNICIAN)
+            ->select('id','name','availability_status')
+            ->get();
     }
 
     public function loadEquipmentHealth(): void
     {
         $equipment = collect();
 
-        $pcs = PC::with(['building', 'computerLab', 'technician'])
+        $pcs = PC::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id')
+            ->with([
+                'building:id,name',
+                'computerLab:id,name',
+                'technician:id,name'
+            ])
             ->get()
             ->map(function($pc) {
                 $pc->equipment_type = 'PC';
@@ -50,7 +68,12 @@ class Index extends Component
             });
         $equipment = $equipment->merge($pcs);
 
-        $accessories = Accessory::with(['building', 'computerLab', 'technician'])
+        $accessories = Accessory::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id','type')
+            ->with([
+                'building:id,name',
+                'computerLab:id,name',
+                'technician:id,name'
+            ])
             ->get()
             ->map(function($acc) {
                 $acc->equipment_type = 'Accessory';
@@ -58,7 +81,12 @@ class Index extends Component
             });
         $equipment = $equipment->merge($accessories);
 
-        $devices = NetworkDevice::with(['building', 'computerLab', 'technician'])
+        $devices = NetworkDevice::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id','type')
+            ->with([
+                'building:id,name',
+                'computerLab:id,name',
+                'technician:id,name'
+            ])
             ->get()
             ->map(function($dev) {
                 $dev->equipment_type = 'Network Device';
@@ -80,9 +108,15 @@ class Index extends Component
     public function selectEquipment($type, $id): void
     {
         $equipment = match($type) {
-            'pc' => PC::with(['building', 'computerLab', 'technician'])->findOrFail($id),
-            'accessory' => Accessory::with(['building', 'computerLab', 'technician'])->findOrFail($id),
-            'network_device' => NetworkDevice::with(['building', 'computerLab', 'technician'])->findOrFail($id),
+            'pc' => PC::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id')
+                ->with(['building:id,name','computerLab:id,name','technician:id,name'])
+                ->findOrFail($id),
+            'accessory' => Accessory::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id','type')
+                ->with(['building:id,name','computerLab:id,name','technician:id,name'])
+                ->findOrFail($id),
+            'network_device' => NetworkDevice::select('id','device_name','brand','health','building_id','computer_lab_id','technician_id','type')
+                ->with(['building:id,name','computerLab:id,name','technician:id,name'])
+                ->findOrFail($id),
         };
         $equipment->equipment_type = match($type) {
             'pc' => 'PC',
@@ -127,6 +161,12 @@ class Index extends Component
         $this->assignRequestId = 0;
         $this->assignTechnicianId = 0;
         $this->loadData();
+    }
+
+    public function assignTo(int $technicianId): void
+    {
+        $this->assignTechnicianId = $technicianId;
+        $this->assign();
     }
 
     public function render()

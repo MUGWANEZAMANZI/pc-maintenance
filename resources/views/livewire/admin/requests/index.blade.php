@@ -150,23 +150,65 @@
                     </table>
 
                     @if($assignRequestId)
-                        <div class="bg-white shadow rounded p-4 max-w-md">
-                            <h2 class="font-semibold mb-2">Assign Technician</h2>
-                            <select wire:model="assignTechnicianId" class="w-full border rounded px-3 py-2 mb-3">
-                                <option value="">-- choose technician --</option>
-                                @foreach($technicians as $t)
-                                    <option value="{{ $t->id }}" @disabled(($t->availability_status ?? 'unavailable') !== 'available')>
-                                        {{ $t->name }} ({{ $t->availability_status ?? 'n/a' }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('assignTechnicianId') <div class="text-red-600 text-sm mb-2">{{ $message }}</div> @enderror
-                            @php $selectedTech = collect($technicians)->firstWhere('id', $assignTechnicianId); @endphp
-                            <div class="flex gap-2">
-                                <button wire:click="assign" class="px-4 py-2 bg-indigo-600 text-white rounded"
-                                        @disabled(!$assignTechnicianId || optional($selectedTech)->availability_status !== 'available')
-                                        wire:loading.attr="disabled" wire:target="assign">Assign</button>
-                                <span class="text-xs text-gray-500 self-center" wire:loading wire:target="assign">Assigning...</span>
+                        <div class="bg-white shadow rounded p-4 max-w-3xl">
+                            <h2 class="font-semibold mb-3">Assign Technician</h2>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Select from dropdown</label>
+                                    <select wire:model="assignTechnicianId" class="w-full border rounded px-3 py-2 mb-3">
+                                        <option value="">-- choose technician --</option>
+                                        @foreach($technicians as $t)
+                                            <option value="{{ $t->id }}" @disabled(($t->availability_status ?? 'unavailable') !== 'available')>
+                                                {{ $t->name }} ({{ $t->availability_status ?? 'n/a' }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('assignTechnicianId') <div class="text-red-600 text-sm mb-2">{{ $message }}</div> @enderror
+                                    @php $selectedTech = collect($technicians)->firstWhere('id', $assignTechnicianId); @endphp
+                                    <div class="flex gap-2">
+                                        <button wire:click="assign" class="px-4 py-2 bg-indigo-600 text-white rounded"
+                                                @disabled(!$assignTechnicianId || optional($selectedTech)->availability_status !== 'available')
+                                                wire:loading.attr="disabled" wire:target="assign">Assign</button>
+                                        <span class="text-xs text-gray-500 self-center" wire:loading wire:target="assign">Assigning...</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Or click an available technician</label>
+                                    <div class="border rounded overflow-hidden">
+                                        <table class="min-w-full text-sm">
+                                            <thead class="bg-gray-50">
+                                                <tr class="text-left text-gray-600">
+                                                    <th class="p-2">Name</th>
+                                                    <th class="p-2">Availability</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($technicians as $t)
+                                                @php $isAvailable = ($t->availability_status ?? 'unavailable') === 'available'; @endphp
+                                                <tr
+                                                    @if($isAvailable)
+                                                        wire:click="assignTo({{ $t->id }})"
+                                                    @endif
+                                                    class="border-t {{ $isAvailable ? 'cursor-pointer hover:bg-green-50' : 'opacity-60 cursor-not-allowed bg-gray-50' }}"
+                                                    title="{{ $isAvailable ? 'Click to assign' : 'Technician unavailable' }}"
+                                                >
+                                                    <td class="p-2">{{ $t->name }}</td>
+                                                    <td class="p-2">
+                                                        <span class="px-2 py-0.5 text-xs rounded {{ $isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                            {{ $t->availability_status ?? 'n/a' }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
                                 <button wire:click="$set('assignRequestId',0)" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
                             </div>
                         </div>

@@ -34,7 +34,8 @@ class Index extends Component
         $uid = Auth::id();
         $equipment = collect();
 
-        $pcs = PC::with(['building', 'computerLab'])
+        $pcs = PC::select('id','device_name','brand','health','building_id','computer_lab_id')
+            ->with(['building:id,name','computerLab:id,name'])
             ->where('technician_id', $uid)
             ->get()
             ->map(function($pc) {
@@ -43,7 +44,8 @@ class Index extends Component
             });
         $equipment = $equipment->merge($pcs);
 
-        $accessories = Accessory::with(['building', 'computerLab'])
+        $accessories = Accessory::select('id','device_name','brand','health','building_id','computer_lab_id')
+            ->with(['building:id,name','computerLab:id,name'])
             ->where('technician_id', $uid)
             ->get()
             ->map(function($acc) {
@@ -52,7 +54,8 @@ class Index extends Component
             });
         $equipment = $equipment->merge($accessories);
 
-        $devices = NetworkDevice::with(['building', 'computerLab'])
+        $devices = NetworkDevice::select('id','device_name','brand','health','building_id','computer_lab_id')
+            ->with(['building:id,name','computerLab:id,name'])
             ->where('technician_id', $uid)
             ->get()
             ->map(function($dev) {
